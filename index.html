@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yogesh Gupta | The Intersection of Sec, AI & Net</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        bg: '#030712',      // Deep Gray-Black
+                        card: '#111827',    // Lighter Gray
+                        border: '#1f2937',  // Border Gray
+                        sec: '#10b981',     // Security Green
+                        ai: '#8b5cf6',      // AI Purple
+                        net: '#0ea5e9',     // Network Blue
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'blob': 'blob 15s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #030712;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Background Elements */
+        .bg-grid-pattern {
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+        }
+
+        .blob-blue {
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.25) 0%, rgba(0,0,0,0) 70%);
+        }
+        .blob-purple {
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(0,0,0,0) 70%);
+        }
+        .blob-green {
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(0,0,0,0) 70%);
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(3, 7, 18, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(17, 24, 39, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            background: rgba(17, 24, 39, 0.7);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #0ea5e9, #8b5cf6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+    </style>
+</head>
+<body class="antialiased selection:bg-ai/30 selection:text-white">
+
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-[10%] -left-[10%] w-[50vw] h-[50vw] blob-blue rounded-full mix-blend-screen opacity-40 animate-blob"></div>
+        <div class="absolute top-[20%] -right-[10%] w-[45vw] h-[45vw] blob-purple rounded-full mix-blend-screen opacity-40 animate-blob" style="animation-delay: 2s"></div>
+        <div class="absolute -bottom-[10%] left-[10%] w-[55vw] h-[55vw] blob-green rounded-full mix-blend-screen opacity-40 animate-blob" style="animation-delay: 4s"></div>
+    </div>
+
+    <div class="fixed inset-0 w-full h-full bg-grid-pattern z-0 pointer-events-none"></div>
+
+    <canvas id="nexusCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-40"></canvas>
+
+    <nav class="fixed w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+            <a href="#" class="font-bold text-xl tracking-tight hover:opacity-80 transition-opacity z-50">
+                Yogesh<span class="text-gray-500">Gupta</span>
+            </a>
+            
+            <div class="hidden md:flex gap-8 text-sm font-medium text-gray-400 z-50">
+                <a href="#about" class="hover:text-white transition-colors">About</a>
+                <a href="#expertise" class="hover:text-white transition-colors">Expertise</a>
+                <a href="#experience" class="hover:text-white transition-colors">Experience</a>
+                <a href="#projects" class="hover:text-white transition-colors">Projects</a>
+            </div>
+
+            <div class="flex gap-4 z-50">
+                <a href="https://github.com/yogeshxd" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-feather="github" class="w-5 h-5"></i>
+                </a>
+                <a href="https://linkedin.com/in/yogeshxd" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-feather="linkedin" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="about" class="relative z-10 min-h-screen flex items-center justify-center px-6 pt-16">
+        <div class="max-w-4xl mx-auto text-center animate-fade-in">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-gray-400 mb-8 backdrop-blur-sm">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                Open to Opportunities
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight drop-shadow-2xl">
+                Architecting the <br>
+                <span class="text-gradient">Convergence</span> of Tech.
+            </h1>
+            
+            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed mb-10 drop-shadow-md">
+                I thrive at the intersection of <span class="text-net font-semibold">Network Engineering</span>, <span class="text-sec font-semibold">Cyber Security</span>, and <span class="text-ai font-semibold">Data Intelligence</span>. 
+                Currently building secure infrastructures and training the next generation of engineers.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#projects" class="px-8 py-3 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                    View My Work
+                </a>
+                <a href="mailto:yogeshgupta.0v@gmail.com" class="px-8 py-3 glass-card text-white font-medium rounded-lg hover:bg-white/10 transition-colors">
+                    Contact Me
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="expertise" class="relative z-10 py-24 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold mb-16 text-center">Core Domains</h2>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card p-8 rounded-2xl group">
+                    <div class="w-12 h-12 bg-net/10 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform ring-1 ring-net/20 group-hover:ring-net/50">
+                        <i data-feather="globe" class="text-net"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Network Infrastructure</h3>
+                    <p class="text-sm text-gray-400 mb-6 leading-relaxed">
+                        Designing scalable networking solutions and automating infrastructure. Hands-on experience with deployment and management of cross-functional teams.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 text-xs font-mono bg-net/10 text-net rounded">Netmiko</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-net/10 text-net rounded">NAPALM</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-net/10 text-net rounded">Docker</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl group">
+                    <div class="w-12 h-12 bg-ai/10 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform ring-1 ring-ai/20 group-hover:ring-ai/50">
+                        <i data-feather="cpu" class="text-ai"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Data & Intelligence</h3>
+                    <p class="text-sm text-gray-400 mb-6 leading-relaxed">
+                        Transforming raw data into actionable insights and building ML models for security applications. Experienced in curriculum design for Data Science.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 text-xs font-mono bg-ai/10 text-ai rounded">Python</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-ai/10 text-ai rounded">Pandas/NumPy</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-ai/10 text-ai rounded">SQL</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl group">
+                    <div class="w-12 h-12 bg-sec/10 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform ring-1 ring-sec/20 group-hover:ring-sec/50">
+                        <i data-feather="shield" class="text-sec"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Cyber Security</h3>
+                    <p class="text-sm text-gray-400 mb-6 leading-relaxed">
+                        Securing digital assets through ethical hacking, reverse engineering, and real-time traffic analysis. Developing tools for phishing detection.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 text-xs font-mono bg-sec/10 text-sec rounded">Linux</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-sec/10 text-sec rounded">PenTesting</span>
+                        <span class="px-2 py-1 text-xs font-mono bg-sec/10 text-sec rounded">RevEng</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="relative z-10 py-24 px-6 border-t border-white/5">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-3xl font-bold mb-16">Professional Journey</h2>
+            
+            <div class="space-y-0">
+                
+                <div class="group relative flex gap-x-6 md:gap-x-10">
+                    <div class="hidden md:block w-32 shrink-0 text-right pt-3">
+                        <p class="text-sm font-mono text-white group-hover:text-ai transition-colors whitespace-nowrap">Nov 2025 - Present</p>
+                        <p class="text-xs text-gray-500 mt-1">Delhi, India</p>
+                    </div>
+                    <div class="relative flex flex-col items-center">
+                        <div class="w-px h-full bg-white/10 group-hover:bg-white/20 transition-colors"></div>
+                        <div class="absolute top-3 w-4 h-4 rounded-full bg-bg border border-white/20 group-hover:border-ai group-hover:bg-ai/20 transition-all z-10">
+                            <div class="w-1.5 h-1.5 bg-gray-500 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:bg-ai transition-colors"></div>
+                        </div>
+                    </div>
+                    <div class="pb-12 pt-1 flex-grow">
+                        <div class="md:hidden mb-2 text-xs font-mono text-gray-500">Nov 2025 - Present</div>
+                        <div class="glass-card p-6 rounded-xl hover:shadow-[0_0_20px_rgba(139,92,246,0.1)] transition-all">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white group-hover:text-ai transition-colors">Instructor</h3>
+                                    <p class="text-ai font-medium">Palin Analytics</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                                Delivering high-quality training across Data Science, Cyber Security, and Networking. Designing learning modules, mentoring students on live projects, and preparing curriculum for real-world technical challenges.
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-xs border border-white/10 px-2 py-1 rounded text-gray-400 font-mono">Mentorship</span>
+                                <span class="text-xs border border-white/10 px-2 py-1 rounded text-gray-400 font-mono">Curriculum Design</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group relative flex gap-x-6 md:gap-x-10">
+                    <div class="hidden md:block w-32 shrink-0 text-right pt-3">
+                        <p class="text-sm font-mono text-white group-hover:text-net transition-colors whitespace-nowrap">May 2024 - Dec 2025</p>
+                    </div>
+                    <div class="relative flex flex-col items-center">
+                        <div class="w-px h-full bg-white/10 group-hover:bg-white/20 transition-colors"></div>
+                        <div class="absolute top-3 w-4 h-4 rounded-full bg-bg border border-white/20 group-hover:border-net group-hover:bg-net/20 transition-all z-10">
+                            <div class="w-1.5 h-1.5 bg-gray-500 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:bg-net transition-colors"></div>
+                        </div>
+                    </div>
+                    <div class="pb-12 pt-1 flex-grow">
+                        <div class="md:hidden mb-2 text-xs font-mono text-gray-500">May 2024 - Dec 2025</div>
+                        <div class="glass-card p-6 rounded-xl hover:shadow-[0_0_20px_rgba(14,165,233,0.1)] transition-all">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white group-hover:text-net transition-colors">Founder & CEO</h3>
+                                    <p class="text-net font-medium">SHAY Networking Solutions</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                                Led end-to-end deployment of robust networks and managed cross-functional teams. Handled seamless client interaction from technical presentations to final implementation.
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-xs border border-white/10 px-2 py-1 rounded text-gray-400 font-mono">Infrastructure</span>
+                                <span class="text-xs border border-white/10 px-2 py-1 rounded text-gray-400 font-mono">Leadership</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group relative flex gap-x-6 md:gap-x-10">
+                    <div class="hidden md:block w-32 shrink-0 text-right pt-3">
+                        <p class="text-sm font-mono text-white group-hover:text-sec transition-colors whitespace-nowrap">Oct 2022 - Mar 2024</p>
+                    </div>
+                    <div class="relative flex flex-col items-center">
+                        <div class="w-px h-full bg-gradient-to-b from-white/10 to-transparent group-hover:from-white/20 transition-colors"></div>
+                        <div class="absolute top-3 w-4 h-4 rounded-full bg-bg border border-white/20 group-hover:border-sec group-hover:bg-sec/20 transition-all z-10">
+                            <div class="w-1.5 h-1.5 bg-gray-500 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:bg-sec transition-colors"></div>
+                        </div>
+                    </div>
+                    <div class="pb-12 pt-1 flex-grow">
+                        <div class="md:hidden mb-2 text-xs font-mono text-gray-500">Oct 2022 - Mar 2024</div>
+                        <div class="glass-card p-6 rounded-xl hover:shadow-[0_0_20px_rgba(16,185,129,0.1)] transition-all">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white group-hover:text-sec transition-colors">Technical Assistant</h3>
+                                    <p class="text-sec font-medium">Vigyantram</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-400 text-sm leading-relaxed">
+                                Researched emerging technologies and delivered lectures to school and college students, making complex technical concepts accessible to diverse learners.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="relative z-10 py-24 px-6 border-t border-white/5 bg-card/20">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold mb-16">Selected Works</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <a href="https://github.com/yogeshxd/Dub-AntiCheat-FiveM" target="_blank" class="glass-card p-6 rounded-xl group hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <i data-feather="shield" class="text-sec"></i>
+                        <i data-feather="arrow-up-right" class="w-4 h-4 text-gray-500 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 group-hover:text-sec transition-colors">Dub-AntiCheat FiveM</h3>
+                    <p class="text-sm text-gray-400 mb-4 h-16 overflow-hidden">
+                        Advanced game security system protecting servers from injection attacks. Implemented via Lua and Reverse Engineering techniques.
+                    </p>
+                    <div class="flex gap-2 text-xs font-mono text-gray-500">
+                        <span>#Lua</span> <span>#ReverseEng</span> <span>#GameSec</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/yogeshxd/PacketMonk" target="_blank" class="glass-card p-6 rounded-xl group hover:shadow-[0_0_20px_rgba(14,165,233,0.15)] transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <i data-feather="activity" class="text-net"></i>
+                        <i data-feather="arrow-up-right" class="w-4 h-4 text-gray-500 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 group-hover:text-net transition-colors">PacketMonk</h3>
+                    <p class="text-sm text-gray-400 mb-4 h-16 overflow-hidden">
+                        Remote network testing and traffic monitoring tool. Uses raw sockets for packet sniffing and anomaly detection.
+                    </p>
+                    <div class="flex gap-2 text-xs font-mono text-gray-500">
+                        <span>#Python</span> <span>#Networking</span> <span>#Sockets</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/yogeshxd/Gideon.ai" target="_blank" class="glass-card p-6 rounded-xl group hover:shadow-[0_0_20px_rgba(139,92,246,0.15)] transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <i data-feather="cpu" class="text-ai"></i>
+                        <i data-feather="arrow-up-right" class="w-4 h-4 text-gray-500 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 group-hover:text-ai transition-colors">Gideon.ai</h3>
+                    <p class="text-sm text-gray-400 mb-4 h-16 overflow-hidden">
+                        Phishing detection platform utilizing Machine Learning to identify malicious URLs and enhance user security.
+                    </p>
+                    <div class="flex gap-2 text-xs font-mono text-gray-500">
+                        <span>#ML</span> <span>#Pandas</span> <span>#Security</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/yogeshxd/FraudBlock" target="_blank" class="glass-card p-6 rounded-xl group transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <i data-feather="box" class="text-gray-400 group-hover:text-white transition-colors"></i>
+                        <i data-feather="arrow-up-right" class="w-4 h-4 text-gray-500 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 group-hover:text-white transition-colors">FraudBlock</h3>
+                    <p class="text-sm text-gray-400 mb-4 h-16 overflow-hidden">
+                        Blockchain-based supply chain solution. Uses Smart Contracts to verify product authenticity via QR codes.
+                    </p>
+                    <div class="flex gap-2 text-xs font-mono text-gray-500">
+                        <span>#Solidity</span> <span>#React</span> <span>#Web3</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/yogeshxd/Tracky" target="_blank" class="glass-card p-6 rounded-xl group transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <i data-feather="bar-chart-2" class="text-gray-400 group-hover:text-white transition-colors"></i>
+                        <i data-feather="arrow-up-right" class="w-4 h-4 text-gray-500 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 group-hover:text-white transition-colors">Tracky</h3>
+                    <p class="text-sm text-gray-400 mb-4 h-16 overflow-hidden">
+                        Data analytics dashboard for visualizing user behaviors and trends. Focuses on clean data presentation.
+                    </p>
+                    <div class="flex gap-2 text-xs font-mono text-gray-500">
+                        <span>#Analytics</span> <span>#Visualization</span>
+                    </div>
+                </a>
+
+                 <a href="https://github.com/yogeshxd/Backsite" target="_blank" class="glass-card p-6 rounded-xl group transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <i data-feather="terminal" class="text-gray-400 group-hover:text-white transition-colors"></i>
+                        <i data-feather="arrow-up-right" class="w-4 h-4 text-gray-500 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 group-hover:text-white transition-colors">Backsite</h3>
+                    <p class="text-sm text-gray-400 mb-4 h-16 overflow-hidden">
+                        A reverse_tcp type attack script. Demonstrates vulnerability assessment and penetration testing capabilities.
+                    </p>
+                    <div class="flex gap-2 text-xs font-mono text-gray-500">
+                        <span>#Python</span> <span>#PenTest</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-white/5 bg-black relative z-10">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-2xl font-bold mb-6">Let's Connect</h2>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto">
+                Always open to discussing Network Automation, AI Safety, or the latest in Cyber Security.
+            </p>
+            
+            <div class="flex justify-center gap-8 mb-12">
+                <a href="mailto:yogeshgupta.0v@gmail.com" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <i data-feather="mail" class="w-4 h-4"></i> Email
+                </a>
+                <a href="https://linkedin.com/in/yogeshxd" target="_blank" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <i data-feather="linkedin" class="w-4 h-4"></i> LinkedIn
+                </a>
+                <a href="https://github.com/yogeshxd" target="_blank" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <i data-feather="github" class="w-4 h-4"></i> GitHub
+                </a>
+            </div>
+            
+            <p class="text-xs text-gray-600">
+                © 2026 Yogesh Gupta. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        feather.replace();
+
+        // Nexus Particle Animation
+        const canvas = document.getElementById('nexusCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.3;
+                this.vy = (Math.random() - 0.5) * 0.3;
+                this.size = Math.random() * 2;
+                // Randomly assign a domain color
+                const colors = ['#10b981', '#8b5cf6', '#0ea5e9']; 
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                
+                // Connect particles
+                for (let j = index + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (dist < 120) {
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.05 - dist/2400})`;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
